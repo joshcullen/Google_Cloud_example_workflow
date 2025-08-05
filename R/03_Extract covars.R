@@ -33,43 +33,6 @@ dfSummary(dat) |>
 
 
 
-########################
-### Pre-process data ###
-########################
-
-### aerial survey
-# dat_aerial2 <- dat_aerial |> 
-#   mutate(date = as_date(mDateTime),
-#          .after = mDateTime) |> 
-#   rename(lon = mlon,
-#          lat = mlat) |> 
-#   shift_longitude()  #change from [-180,180] to [0,360]
-
-### NOAA observer data
-# dat_piro2 <- dat_piro |> 
-#   mutate(across(where(is.character),  # Change all instances of "NULL" (chr string, not type NULL) to NA
-#                 \(x) case_when(x == 'NULL' ~ NA,
-#                                TRUE ~ x))) |> 
-#   select(-species_common_name_57) |>  # Remove duplicate common name column
-#   rename(species_common_name = species_common_name_38) |> 
-#   mutate(across(c(soak_time:fltln_len, ldr_diam, set_begin_lat:haul_end_lon,
-#                   set_begin_temp:num_hks_set, captured_lat:captured_lon,
-#                   carapace_len_curved:tail_len),
-#                 as.numeric)) |>  # Change column types for some from char to numeric
-#   mutate(captured_datetime = as_datetime(captured_datetime), #convert to datetime
-#          date = case_when(!is.na(captured_datetime) ~ as_date(captured_datetime),
-#                           TRUE ~ as_date(haul_end_datetime)),
-#          # month_year = str_replace(date, pattern = "..$", replacement = "01"),
-#          lon = rowMeans(pick(set_begin_lon, set_end_lon, haul_begin_lon, haul_end_lon), na.rm = TRUE),
-#          lat = rowMeans(pick(set_begin_lat, set_end_lat, haul_begin_lat, haul_end_lat), na.rm = TRUE),
-#          obs = case_when(is.na(species_common_name) ~ 0,
-#                          TRUE ~ 1)  #add column for pres/abs of leatherbacks
-#   ) |> 
-#   shift_longitude() |> 
-#   drop_na(date, lon, lat)  #remove any rows with missing date or coords
-
-
-
 ###############################
 ### Load environmental data ###
 ###############################

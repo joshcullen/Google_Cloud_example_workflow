@@ -1,12 +1,20 @@
 
 # Function to shift longitude from [-180, 180] range, to [0,360] range
 
-shift_longitude <- function(data) {
+shift_longitude <- function(data, rev = FALSE) {
   ## data = data.frame containing column named lon (WGS84 proj)
   
-  # Check which coords need to be flipped
-  data <- data |> 
-    mutate(lon = ifelse(lon < 0, 360 + lon, lon))
+  if (!rev) {
+    # Check which coords need to be flipped
+    data <- data |> 
+      mutate(lon = ifelse(lon < 0, 360 + lon, lon))
+    
+  } else if (rev) {
+    # Reverse lon to be negative values
+    data <- data |> 
+      mutate(lon = ifelse(lon > 180, lon - 360, lon))
+  }
+  
   
   return(data)
 }
