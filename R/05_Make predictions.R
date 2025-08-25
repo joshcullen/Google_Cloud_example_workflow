@@ -135,30 +135,32 @@ ggplot() +
 ### Export prediction files (raster and image) ###
 ##################################################
 
+exp_idx <- seq_along(covar_pred)
+
 # Export rasters
-iwalk(seq_along(covar_pred),
+iwalk(exp_idx,
       ~writeRaster(x = rast(covar_pred[[.x]]),
-                   filename = glue("Predictions/raster/blsh_pred_{.y}.tif")
+                   filename = glue("Predictions/raster/blsh_pred_{names(covar_pred)[.x]}.tif")
                    ),
       .progress = TRUE
       )
 
 
 # Export images
-iwalk(seq_along(covar_pred),
+iwalk(exp_idx,
       ~{
         plt <- ggplot() +
           geom_raster(data = covar_pred[[.x]],
                       aes(x, y, fill = pred)) +
           scale_fill_viridis_c("log(Intensity)", option = "inferno") +
           geom_sf(data = world, fill = "grey70") +
-          labs(title = glue("{.y} Prediction")) +
+          labs(title = glue("{names(covar_pred)[.x]} Prediction")) +
           theme_bw() +
           coord_sf(xlim = ext(sst_sc)[1:2],
                    ylim = ext(sst_sc)[3:4],
                    expand = FALSE)
         
-        ggsave(filename = glue("Predictions/img/blsh_pred_{.y}.png"),
+        ggsave(filename = glue("Predictions/img/blsh_pred_{names(covar_pred)[.x]}.png"),
                plot = plt, width = 6, height = 8, units = "in", dpi = 400)
       },
       .progress = TRUE
