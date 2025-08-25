@@ -20,7 +20,7 @@ source("R/utils.R")
 ### Load data ###
 #################
 
-dat <- read_csv("data/blsh_data.csv") |> 
+dat <- read_csv("data/test/blsh_data.csv") |> 
   mutate(ptt = as.character(ptt))
 
 
@@ -199,4 +199,4 @@ rsf_dat <- rbind(used, avail_bbox2)
 ### Export prepped data ###
 ###########################
 
-write_csv(rsf_dat, "data/blsh_presabs_data.csv")
+write_csv(rsf_dat, "data/test/blsh_presabs_data.csv")

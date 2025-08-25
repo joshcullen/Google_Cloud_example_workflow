@@ -6,13 +6,13 @@ library(sf)
 library(terra)
 library(glue)
 library(tictoc)
-library(bayesmove)
+# library(bayesmove)
 library(furrr)
 library(progressr)
 # library(janitor)
-library(giscoR)
-library(summarytools)
-library(exactextractr)
+# library(giscoR)
+# library(summarytools)
+# library(exactextractr)
 
 source("R/utils.R")
 
@@ -21,13 +21,13 @@ source("R/utils.R")
 ### Load data ###
 #################
 
-dat <- read_csv("data/blsh_presabs_data.csv") |> 
+dat <- read_csv("data/test/blsh_presabs_data.csv") |> 
   mutate(ptt = as.character(ptt))
 
 glimpse(dat)
 summary(dat)
-dfSummary(dat) |> 
-  view()
+# dfSummary(dat) |> 
+#   view()
 
 
 
@@ -38,15 +38,15 @@ dfSummary(dat) |>
 ###############################
 
 # Store file paths of dynamic covars
-covar.files <- list.files(path = "data/rasters", full.names = TRUE) |> 
+covar.files <- list.files(path = "data/test/rasters", full.names = TRUE) |> 
   str_subset(pattern = "z_sd|gebco|east|north", negate = TRUE)
 
 
 # Load bathymetry
-z <- rast("data/rasters/gebco_2024.nc")
+z <- rast("data/test/rasters/gebco_2024.nc")
 
 # Load rugosity
-z_sd <- rast("data/rasters/z_sd.tiff")
+z_sd <- rast("data/test/rasters/z_sd.tiff")
 
 
 
@@ -56,12 +56,12 @@ z_sd <- rast("data/rasters/z_sd.tiff")
 ### Extract covars ###
 ######################
 
-# Dynamic layers
+# Dynamic layers (assuming all files have the same spatiotemporal resolution)
 tic()
 dat2 <- extract_covars_big(points = dat, covars = covar.files, t_name = "date",
                            covar_names = c("CHL","eke","ssh_sd","ssh","sst_sd","sst"),
                            cores = length(covar.files))
-toc()  #takes 3.25 min
+toc()  #takes 15 min
 
 
 # Static layers
@@ -86,13 +86,13 @@ dat2$z_sd <- extract(x = z_sd,
 ### Visualize tracks and data ###
 #################################
 
-dat2 |> 
-  select(-c(x,y)) |> 
-  rename(x = lon,
-         y = lat,
-         id = ptt) |> 
-  filter(presabs == 1) |> 
-  shiny_tracks(epsg = 4326)
+# dat2 |> 
+#   select(-c(x,y)) |> 
+#   rename(x = lon,
+#          y = lat,
+#          id = ptt) |> 
+#   filter(presabs == 1) |> 
+#   shiny_tracks(epsg = 4326)
 
 
 
@@ -101,4 +101,13 @@ dat2 |>
 ### Export data ###
 ###################
 
-write_csv(dat2, "data/blsh_covars_data.csv")
+write_csv(dat2, "data/test/blsh_covars_data.csv")
+
+
+
+
+############################################
+### Shut down Workstation after long run ###
+############################################
+
+source("R/gcp-workstation-shutdown.R")
