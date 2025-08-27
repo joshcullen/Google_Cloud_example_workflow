@@ -1,6 +1,9 @@
 
 ### Shell script to install necessary geospatial software and gcloud CLI for adding files from Google Cloud bucket ###
 
+# Change to root directory if using R project
+cd ..
+
 # Install gcloud CLI
 curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-linux-x86_64.tar.gz
 
@@ -25,9 +28,12 @@ https://8085-w-joshcullen-me8xykmp.cluster-elnmuk7bnbbzqw4vcgtaay3c52.cloudworks
 gcloud auth list
 
 
+# Create new folder (in R project) named 'data'
+cd Google_Cloud_example_workflow
+mkdir data
 
-# Copy data files from Google Bucket (or from local computer) after creating an empty directory named "data"
-gcloud storage cp -r gs://esd-climate-ecosystems-dev/test data
+# Copy data files from Google Bucket (or from local computer)
+gcloud storage cp -r gs://esd-climate-ecosystems-dev/test/ data
 
 # Update package list
 sudo apt-get update

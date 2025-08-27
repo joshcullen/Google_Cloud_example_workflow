@@ -135,6 +135,12 @@ ggplot() +
 ### Export prediction files (raster and image) ###
 ##################################################
 
+# Create new folders to store products
+dir.create("Predictions/")
+dir.create("Predictions/raster/")  #store rasters
+dir.create("Predictions/img/")  #store images of maps
+
+# Create index to loop over
 exp_idx <- seq_along(covar_pred)
 
 # Export rasters
